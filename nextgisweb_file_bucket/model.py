@@ -26,7 +26,7 @@ from nextgisweb.resource import (
 from nextgisweb.resource.category import MiscellaneousCategory
 
 
-class FileBucket(Base, Resource):
+class FileBucket(Resource):
     identity = "file_bucket"
     cls_display_name = gettext("File bucket")
     cls_category = MiscellaneousCategory
