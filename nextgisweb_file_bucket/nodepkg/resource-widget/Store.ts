@@ -38,9 +38,11 @@ class ResourceFile {
 
 export type { ResourceFile };
 
-export class Store
-    implements EditorStore<FileBucketRead, FileBucketCreate, FileBucketUpdate>
-{
+export class Store implements EditorStore<
+    FileBucketRead,
+    FileBucketCreate,
+    FileBucketUpdate
+> {
     readonly identity = "file_bucket";
 
     @observable.shallow accessor files: ResourceFile[] = [];
