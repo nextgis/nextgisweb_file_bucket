@@ -19,84 +19,84 @@ import ArchiveIcon from "@nextgisweb/icon/mdi/zip-box";
 import "./Widget.less";
 
 function showError(
-    [status, msg]: [boolean, string | undefined | null],
-    messageApi: MessageInstance
+  [status, msg]: [boolean, string | undefined | null],
+  messageApi: MessageInstance
 ) {
-    if (!status) {
-        messageApi.error(msg);
-    }
+  if (!status) {
+    messageApi.error(msg);
+  }
 }
 
 const columns: EdiTableColumn<ResourceFile>[] = [
-    {
-        key: "name",
-        component: ({ value }) => <>{value}</>,
-    },
-    {
-        key: "size",
-        component: ({ value }) =>
-            typeof value === "number" ? formatSize(value) : <></>,
-    },
+  {
+    key: "name",
+    component: ({ value }) => <>{value}</>,
+  },
+  {
+    key: "size",
+    component: ({ value }) =>
+      typeof value === "number" ? formatSize(value) : <></>,
+  },
 ];
 
 export const ResourceWidget: EditorWidget<Store> = observer(({ store }) => {
-    const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
 
-    const actions = useMemo(
-        () => [
-            <FileUploaderButton
-                key="file"
-                multiple={true}
-                onChange={(value) => {
-                    if (!value) return;
-                    showError(store.appendFiles(value), messageApi);
-                }}
-                uploadText={gettext("Add files")}
-            />,
-            <FileUploaderButton
-                key="archive"
-                accept=".zip"
-                onChange={(value) => {
-                    if (!value) return;
-                    showError(store.fromArchive(value), messageApi);
-                }}
-                uploadText={gettext("Import from ZIP archive")}
-            />,
-        ],
-        [messageApi, store]
-    );
+  const actions = useMemo(
+    () => [
+      <FileUploaderButton
+        key="file"
+        multiple={true}
+        onChange={(value) => {
+          if (!value) return;
+          showError(store.appendFiles(value), messageApi);
+        }}
+        uploadText={gettext("Add files")}
+      />,
+      <FileUploaderButton
+        key="archive"
+        accept=".zip"
+        onChange={(value) => {
+          if (!value) return;
+          showError(store.fromArchive(value), messageApi);
+        }}
+        uploadText={gettext("Import from ZIP archive")}
+      />,
+    ],
+    [messageApi, store]
+  );
 
-    return (
-        <div className="ngw-file-bucket-resource-widget">
-            {contextHolder}
-            {store.archive ? (
-                <div className="archive">
-                    <Space>
-                        {gettext("Files will be imported from:")}
-                        <ArchiveIcon />
-                        {store.archive.name}
-                        <Button
-                            onClick={() => store.fromArchive(null)}
-                            icon={<ClearIcon />}
-                            type="text"
-                            shape="circle"
-                        />
-                    </Space>
-                </div>
-            ) : (
-                <>
-                    <ActionToolbar pad borderBlockEnd actions={actions} />
-                    <EdiTable
-                        store={store}
-                        columns={columns}
-                        rowKey="id"
-                        showHeader={false}
-                        parentHeight
-                    />
-                </>
-            )}
+  return (
+    <div className="ngw-file-bucket-resource-widget">
+      {contextHolder}
+      {store.archive ? (
+        <div className="archive">
+          <Space>
+            {gettext("Files will be imported from:")}
+            <ArchiveIcon />
+            {store.archive.name}
+            <Button
+              onClick={() => store.fromArchive(null)}
+              icon={<ClearIcon />}
+              type="text"
+              shape="circle"
+            />
+          </Space>
         </div>
-    );
+      ) : (
+        <>
+          <ActionToolbar pad borderBlockEnd actions={actions} />
+          <EdiTable
+            store={store}
+            columns={columns}
+            rowKey="id"
+            showHeader={false}
+            parentHeight
+          />
+        </>
+      )}
+    </div>
+  );
 });
 
 ResourceWidget.displayName = "ResourceWidget";
