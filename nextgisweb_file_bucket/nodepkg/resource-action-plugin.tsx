@@ -1,5 +1,5 @@
 /** @plugin */
-import { route } from "@nextgisweb/pyramid/api";
+import { routeURL } from "@nextgisweb/pyramid/api";
 import { gettext } from "@nextgisweb/pyramid/i18n";
 import { registerResourceAction } from "@nextgisweb/resource/resource-section/registry";
 import { hasExportPermission } from "@nextgisweb/resource/util/hasExportPermission";
@@ -22,5 +22,5 @@ registerResourceAction(COMP_ID, {
 
     return hasExportPermission(it);
   },
-  href: (it) => route("resource.export", it.id).url(),
+  href: (it) => routeURL("resource.export", it.id),
 });
