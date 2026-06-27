@@ -101,4 +101,4 @@ export const ResourceWidget: EditorWidget<Store> = observer(({ store }) => {
 
 ResourceWidget.displayName = "ResourceWidget";
 ResourceWidget.title = gettext("File bucket");
-ResourceWidget.activateOn = { update: true };
+ResourceWidget.activateOn = { create: true, update: true };
