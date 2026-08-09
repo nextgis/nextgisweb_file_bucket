@@ -5,7 +5,7 @@ with io.open("VERSION", "r") as fd:
     VERSION = fd.read().rstrip()
 
 requires = [
-    "nextgisweb>=5.4.0.dev9",
+    "nextgisweb>=5.6.0.dev2",
     "zipstream-new==1.1.*",
 ]
 
