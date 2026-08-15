@@ -1,5 +1,6 @@
 import zipfile
 from io import BytesIO
+from typing import TypedDict
 
 import pytest
 import webtest
@@ -8,9 +9,15 @@ from nextgisweb.resource.test import ResourceAPI
 
 pytestmark = pytest.mark.usefixtures("ngw_resource_defaults", "ngw_auth_administrator")
 
-TEST_FILE1 = {"name": "rose.flw", "content": b"rose"}
-TEST_FILE2 = {"name": "orchid.flw", "content": b"orchid"}
-TEST_FILE3 = {"name": "daisy.flw", "content": b"daisy"}
+
+class FileData(TypedDict):
+    name: str
+    content: bytes
+
+
+TEST_FILE1: FileData = {"name": "rose.flw", "content": b"rose"}
+TEST_FILE2: FileData = {"name": "orchid.flw", "content": b"orchid"}
+TEST_FILE3: FileData = {"name": "daisy.flw", "content": b"daisy"}
 
 
 def test_bucket_crud(ngw_webtest_app):
