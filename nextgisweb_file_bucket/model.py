@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import os
 import os.path
 import zipfile
 from datetime import datetime
+from pathlib import Path
 
 import magic
 import sqlalchemy as sa
@@ -36,13 +39,13 @@ class FileBucket(Resource):
 
     tstamp: Mapped[datetime | None] = mapped_column(sa.DateTime())
 
-    files: Mapped[list["FileBucketFile"]] = orm.relationship(
+    files: Mapped[list[FileBucketFile]] = orm.relationship(
         cascade="all,delete-orphan",
         back_populates="file_bucket",
     )
 
     @classmethod
-    def check_parent(cls, parent):
+    def check_parent(cls, parent: Resource) -> bool:
         return isinstance(parent, ResourceGroup)
 
 
@@ -63,17 +66,16 @@ class FileBucketFile(Base):
     fileobj: Mapped[FileObj] = orm.relationship(lazy="joined")
 
     @property
-    def path(self):
+    def path(self) -> Path:
         return self.fileobj.filename()
 
 
-def validate_filename(filename):
-    # Проверяем на вещи типа ".." в имени файла или "/" в начале.
+def validate_filename(filename: str) -> bool:
     return not os.path.isabs(filename) and filename == os.path.normpath(filename)
 
 
 class ArchiveAttr(SAttribute):
-    def set(self, srlzr: Serializer, value: FileUploadRef, *, create: bool):
+    def set(self, srlzr: Serializer, value: FileUploadRef, *, create: bool) -> None:
         assert isinstance(srlzr.obj, FileBucket)
         srlzr.obj.tstamp = utcnow_naive()
         srlzr.obj.files[:] = []
@@ -121,17 +123,17 @@ class FilesAttr(SAttribute):
             for f in sorted(srlzr.obj.files, key=lambda f: f.name)
         ]
 
-    def set(self, srlzr: Serializer, value: list[FileUploadFileWrite], *, create: bool):
+    def set(self, srlzr: Serializer, value: list[FileUploadFileWrite], *, create: bool) -> None:
         assert isinstance(srlzr.obj, FileBucket)
         srlzr.obj.tstamp = utcnow_naive()
 
-        files_info: dict[str, FileUploadFileWrite] = dict()
+        files_info: dict[str, FileUploadFileWrite] = {}
         for f in value:
             if not validate_filename(f.name):
                 raise ValidationError(message="Insecure filename.")
             files_info[f.name] = f
 
-        removed_files = list()
+        removed_files = []
         for filebucket_file in srlzr.obj.files:
             if filebucket_file.name not in files_info:  # Removed file
                 removed_files.append(filebucket_file)
@@ -164,7 +166,7 @@ class FileBucketSerializer(Serializer, resource=FileBucket):
     files = FilesAttr(read=DataScope.read, write=DataScope.write)
     tstamp = SColumn(read=ResourceScope.read, write=None)
 
-    def deserialize(self):
-        if self.data.files is not UNSET and self.data.archive is not UNSET:  # ty: ignore[unresolved-attribute]
+    def deserialize(self) -> None:
+        if self.data.files is not UNSET and self.data.archive is not UNSET:
             raise ValidationError("'files' and 'archive' attributes should not pass together.")
         super().deserialize()

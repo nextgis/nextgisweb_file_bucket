@@ -1,11 +1,10 @@
-import io
 from setuptools import find_packages, setup
 
-with io.open("VERSION", "r") as fd:
+with open("VERSION") as fd:
     VERSION = fd.read().rstrip()
 
 requires = [
-    "nextgisweb>=5.6.0.dev2",
+    "nextgisweb>=5.6.0.dev11",
     "zipstream-new==1.1.*",
 ]
 
