@@ -1,4 +1,4 @@
-import { action, computed, observable } from "mobx";
+import { action, computed, observableRef, observableShallow } from "mobx";
 
 import type {
   FileBucketCreate,
@@ -45,9 +45,9 @@ export class Store implements EditorStore<
 > {
   readonly identity = "file_bucket";
 
-  @observable.shallow accessor files: ResourceFile[] = [];
-  @observable.shallow accessor archive: FileUploadObject | null = null;
-  @observable.ref accessor dirty = false;
+  @observableShallow accessor files: ResourceFile[] = [];
+  @observableShallow accessor archive: FileUploadObject | null = null;
+  @observableRef accessor dirty = false;
 
   @action
   load(value: FileBucketRead) {
