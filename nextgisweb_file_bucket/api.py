@@ -1,8 +1,12 @@
 import zipstream
-from pyramid.httpexceptions import HTTPNotFound
-from pyramid.response import Response
 
-from nextgisweb.pyramid.tomb import Configurator, Request, UnsafeFileResponse
+from nextgisweb.pyramid.tomb import (
+    Configurator,
+    HTTPNotFound,
+    Request,
+    Response,
+    UnsafeFileResponse,
+)
 from nextgisweb.resource import DataScope
 
 from .component import FileBucketComponent
